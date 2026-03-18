@@ -1,44 +1,55 @@
 import pandas as pd
 import re
-from scaledown import compressor
+from pathlib import Path
 from sentence_transformers import SentenceTransformer, util
+from urllib.parse import urlparse
+BASE_DIR = Path(__file__).resolve().parent
+facts = pd.read_csv(BASE_DIR / "fact_db.csv")
 model = SentenceTransformer("all-MiniLM-L6-v2")
-facts = pd.read_csv("fact.csv")
-fact_embeddings = model.encode(facts["claim"].tolist(), convert_to_tensor=True)
+fact_embeddings = model.encode(
+    facts["claim"].tolist(), convert_to_tensor=True
+)
 def extract_claims(text):
     sentences = re.split(r"[.!?]", text)
-    claims = []
-    for s in sentences:
-        s = s.strip()
-        if len(s) > 25:
-            claims.append(s)
-    return claims
+    return [s.strip() for s in sentences if len(s.strip()) > 25]
 def verify_claim(claim):
     claim_embedding = model.encode(claim, convert_to_tensor=True)
     scores = util.cos_sim(claim_embedding, fact_embeddings)
     best_index = scores.argmax().item()
     fact = facts.iloc[best_index]
+    confidence = float(scores[0][best_index])
     return {
         "claim": claim,
-        "is_true": bool(fact["label"]),
+        "status": "True" if fact["label"] == 1 else "False",
+        "reason": f"Matched with similar claim (confidence: {round(confidence,2)})",
         "correct_fact": fact["correct_fact"],
         "source": fact["source"],
-        "confidence": float(scores[0][best_index])
+        "confidence": confidence
     }
-def verify_article(text):
-    compressed = compressor(text)
-    claims = extract_claims(compressed)
+def get_credibility_score(url):
+    if not url:
+        return None
+    domain = urlparse(url).netloc
+    if ".gov" in domain or ".edu" in domain:
+        return 85
+    elif "news" in domain:
+        return 65
+    elif "blog" in domain:
+        return 50
+    else:
+        return 40
+def verify_article(text, url=None):
+    claims = extract_claims(text)
     results = []
     true_count = 0
     for claim in claims:
         result = verify_claim(claim)
-        results.append(result)
-        if result["is_true"]:
+        if result["status"] == "True":
             true_count += 1
-    score = 0
-    if len(claims) > 0:
-        score = (true_count / len(claims)) * 100
+        results.append(result)
+    truth_percentage = (true_count / len(results)) * 100 if results else 0
     return {
-        "truth_score": score,
-        "claims": results
+        "claims": results,
+        "truth_percentage": round(truth_percentage, 2),
+        "credibility_score": get_credibility_score(url)
     }

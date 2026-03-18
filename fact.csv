@@ -1,4 +1,4 @@
 claim,label,correct_fact,source
-India banned petrol cars in 2025,false,India plans EV transition by 2035,Reuters
-Drinking hot water cures covid,false,No scientific evidence WHO states it does not cure covid,WHO
-Chandrayaan 3 launched in 2023,true,ISRO launched Chandrayaan 3 in 2023,ISRO
+"Earth revolves around the Sun",1,"Earth revolves around the Sun","NASA"
+"Humans can breathe in space without oxygen",0,"Humans need oxygen to survive","WHO"
+"Water boils at 100 degrees Celsius",1,"Water boils at 100°C","Science"
