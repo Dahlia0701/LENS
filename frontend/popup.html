@@ -2,13 +2,17 @@
 <html>
 <head>
 <title>Fact Checker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <h3>Fact Check News</h3>
+<input type="file" id="imageInput">
+<button id="imageVerifyBtn">Verify Image</button>
 <textarea id="news" rows="8" cols="35"></textarea>
 <br><br>
 <button id="verifyBtn">Verify</button>
 <h4 id="score"></h4>
+<canvas id="chart" width="300" height="200"></canvas>
 <pre id="output"></pre>
 <script src="popup.js"></script>
 </body>

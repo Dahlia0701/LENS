@@ -4,6 +4,8 @@ import shutil
 from backend.pipeline import verify_article
 from backend.ocr import extract_text_from_image
 from fastapi.middleware.cors import CORSMiddleware
+from backend.image_verify import verify_image_with_clip
+import os
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -25,7 +27,10 @@ def verify_image(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
     text = extract_text_from_image(file_path)
     result = verify_article(text)
+    clip_result = verify_image_with_clip(file_path, text)
+    os.remove(file_path)  
     return {
         "extracted_text": text,
-        "analysis": result
+        "analysis": result,
+        "image_verification": clip_result
     }
