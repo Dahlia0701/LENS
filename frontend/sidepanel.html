@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Local Expert News Sentinel</title>
+    <script src="chart.min.js"></script>
+    <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+    <div class="glass-container">
+        <header>
+            <h1 class="main-heading">LENS</h1>
+            <h3 class="main-heading">Local Expert News Sentinel</h3>
+            <p class="sub-heading">Vernacular News Analysis</p>
+        </header>
+        <main>
+            <section class="card accuracy-card">
+                <label>Truth Accuracy</label>
+                <div id="accuracy-value">0%</div>
+                <p id="status-text">Select news text to verify...</p>
+            </section>
+            <section class="input-section">
+                <textarea id="news-input" placeholder="Selected text will appear here..."></textarea>
+                <div class="button-group">
+                    <button id="verify-btn">Verify Facts</button>
+                    <label class="icon-btn">
+                        📸 <input type="file" id="image-upload" hidden>
+                    </label>
+                </div>
+            </section>
+            <section class="card graph-card">
+                <label>Claim Confidence Graph</label>
+                <canvas id="claimGraph"></canvas>
+            </section>
+            <section id="explanation-container">
+                <div class="card info-card">
+                    <label>Analysis Detail</label>
+                    <p id="explanation-text">Verification results will show here.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="sidepanel.js"></script>
+</body>
+</html>
