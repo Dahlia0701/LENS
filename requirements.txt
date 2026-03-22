@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-pandas
-sentence-transformers
-scaledown
