@@ -1,4 +1,42 @@
 claim,label,correct_fact,source
-"Earth revolves around the Sun",1,"Earth revolves around the Sun","NASA"
-"Humans can breathe in space without oxygen",0,"Humans need oxygen to survive","WHO"
-"Water boils at 100 degrees Celsius",1,"Water boils at 100°C","Science"
+Earth revolves around the Sun,1,Earth orbits the Sun once every 365 days,NASA
+Chandrayaan-3 was launched on July 14 2023 from Satish Dhawan Space Centre,1,Launch time was 14:35 IST on July 14 2023,ISRO
+Chandrayaan-3 landed on the Moon in 2023,1,Chandrayaan-3 landed on August 23 2023,ISRO
+Water boils at 100 degrees Celsius,1,Water boils at 100°C at sea level,Science
+India is the largest democracy in the world,1,India has the largest democratic population,UN
+The human body has 206 bones,1,An adult human has 206 bones,WHO
+The speed of light is approximately 300000 km/s,1,Light travels at ~3×10^8 m/s,Physics
+The Moon orbits Earth,1,The Moon revolves around Earth,NASA
+Electric cars produce zero tailpipe emissions,1,EVs emit no exhaust gases,EPA
+COVID-19 is caused by a virus,1,COVID-19 is caused by SARS-CoV-2 virus,WHO
+Plants use photosynthesis to make food,1,Plants convert sunlight into energy,Biology
+
+Humans can breathe in space without oxygen,0,Humans need oxygen to survive,NASA
+Mars has breathable atmosphere,0,Mars atmosphere is mostly carbon dioxide,NASA
+The Sun revolves around Earth,0,Earth revolves around the Sun,Science
+Water boils at 50 degrees Celsius,0,Water boils at 100°C,Science
+Vaccines cause autism,0,No scientific evidence links vaccines to autism,WHO
+Humans can survive without water indefinitely,0,Humans need water to survive,WHO
+The Moon produces its own light,0,Moon reflects sunlight,NASA
+Electric cars use petrol,0,Electric cars run on batteries,Energy Dept
+COVID-19 is caused by bacteria,0,COVID-19 is caused by a virus,WHO
+Earth is flat,0,Earth is spherical,Science
+
+Iran launched missile strikes targeting Israel in recent conflict,1,Iran has conducted missile operations against Israel,Reuters
+Israel maintains nuclear ambiguity policy,1,Israel does not officially confirm nuclear weapons,IAEA
+Dimona nuclear facility is located in Israel,1,Dimona is a key nuclear site in Israel,IAEA
+Missile attacks increase geopolitical tensions,1,Missile strikes escalate regional conflicts,UN
+Iran denied targeting nuclear facilities directly,1,Iran claims strikes were strategic,Reuters
+
+Mars does not have breathable oxygen atmosphere,0,Mars atmosphere is mostly carbon dioxide,NASA
+Humans cannot survive on Mars without life support,0,Humans require oxygen and pressure to survive,NASA
+
+Bilal Arif Sarafi was reportedly killed in Pakistan,1,Bilal Arif Sarafi reportedly died in Pakistan,News Reports
+Bilal Arif Sarafi death may be linked to family dispute,1,Reports suggest internal family conflict,News Reports
+No confirmation of external terror attack in Bilal Arif Sarafi case,1,No verified evidence of terror assassination,Fact Check
+Bilal Arif Sarafi was assassinated by external attackers,0,No official confirmation of external attackers,Fact Check
+
+Drunk driver hit a Delhi police constable in Janakpuri,1,Incident reported during drunk driving check in West Delhi,News Reports
+Constable was dragged on car bonnet in Delhi incident,1,Reports confirm policeman was dragged briefly,News Reports
+Driver attempted to flee during police checking in Delhi,1,Motorist tried to escape drunk driving check,News Reports
+Delhi cop was unharmed and no incident occurred,0,Reports confirm actual incident took place,Fact Check

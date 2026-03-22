@@ -4,7 +4,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
-facts = pd.read_csv(BASE_DIR / "data/fact_db.csv")
+facts = pd.read_csv(BASE_DIR.parent / "fact.csv")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 embeddings = model.encode(facts["claim"].tolist())
 embeddings = np.array(embeddings).astype("float32")

@@ -4,14 +4,11 @@ const accuracyValue = document.getElementById('accuracy-value');
 const statusText = document.getElementById('status-text');
 const explanationText = document.getElementById('explanation-text');
 const imageUpload = document.getElementById('image-upload');
-let confidenceChart = null; 
+let confidenceChart = null;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "UPDATE_TEXT") {
-        newsInput.scrollTop = 0;
         newsInput.value = message.data;
-        newsInput.style.borderColor = "#414B9E"; 
-        setTimeout(() => { newsInput.style.borderColor = "#9792CB"; }, 200);
-        sendResponse({ status: "Text received in Side Panel" });
+        sendResponse({ status: "OK" });
     }
     return true;
 });
@@ -26,9 +23,7 @@ function renderConfidenceGraph(data) {
             labels: data.map((_, i) => `Claim ${i + 1}`),
             datasets: [{
                 label: 'Confidence %',
-                data: data,
-                backgroundColor: '#414B9E',
-                borderRadius: 8
+                data: data
             }]
         },
         options: {
@@ -40,61 +35,66 @@ function renderConfidenceGraph(data) {
     });
 }
 verifyBtn.addEventListener('click', async () => {
-    const textToVerify = newsInput.value.trim();
-    if (!textToVerify) {
-        alert("Please highlight or type news text first!");
+    const text = newsInput.value.trim();
+    if (!text) {
+        alert("Enter or select news text!");
         return;
     }
-    verifyBtn.innerText = "Sending to AI Pipeline...";
+    verifyBtn.innerText = "Analyzing...";
     verifyBtn.disabled = true;
     try {
-        const response = await fetch("http://127.0.0.1:8000/verify-async", {
+        const res = await fetch("http://127.0.0.1:8000/verify-async", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ text: textToVerify })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text })
         });
-        const data = await response.json();
-        const jobId = data.job_id;
-        verifyBtn.innerText = "Processing...";
+        const { job_id } = await res.json();
         let result = null;
         while (true) {
-            const res = await fetch(`http://127.0.0.1:8000/result/${jobId}`);
-            const jobData = await res.json();
-            if (jobData.status === "finished") {
-                result = jobData.result;
+            const r = await fetch(`http://127.0.0.1:8000/result/${job_id}`);
+            const data = await r.json();
+            if (data.status === "finished") {
+                result = data.result;
                 break;
             }
-            await new Promise(r => setTimeout(r, 1000)); 
+            if (data.status === "failed") {
+                throw new Error("Processing failed");
+            }
+            await new Promise(r => setTimeout(r, 1000));
         }
         const score = result.truth_percentage;
         accuracyValue.innerText = `${score}%`;
-        if (score > 50) {
-            accuracyValue.className = 'status-true';
-            statusText.innerText = "Verified Credible News";
+        if (score >= 70) {
+            accuracyValue.className = "status-true";
+            statusText.innerText = "Credible News";
+        } else if (score >= 40) {
+            accuracyValue.className = "status-neutral";
+            statusText.innerText = "Partially True / Misleading";
         } else {
-            accuracyValue.className = 'status-false';
-            statusText.innerText = "Misinformation Alert!";
+            accuracyValue.className = "status-false";
+            statusText.innerText = "Likely Misinformation";
         }
-        explanationText.innerText =
-            result.claims.map(c =>
-                `• ${c.claim}\n→ ${c.reason}`
-            ).join("\n\n");
-        const graphData = result.confidence_graph.map(c => c.confidence * 100);
+        explanationText.innerText = result.claims.map(c => `
+• ${c.claim}
+Status: ${c.status}
+Confidence: ${c.confidence}%
+Reason: ${c.reason}
+Correct Fact: ${c.correct_fact}
+Source: ${c.source}
+        `).join("\n");
+        const graphData = result.confidence_graph.map(c => c.confidence);
         renderConfidenceGraph(graphData);
-        verifyBtn.innerText = "Verify Facts";
-        verifyBtn.disabled = false;
-    } catch (error) {
-        console.error(error);
-        verifyBtn.innerText = "Error - Try Again";
-        verifyBtn.disabled = false;
+    } catch (err) {
+        console.error(err);
+        statusText.innerText = "Error occurred";
     }
+    verifyBtn.innerText = "Verify Facts";
+    verifyBtn.disabled = false;
 });
-imageUpload.addEventListener('change', async (event) => {
-    const file = event.target.files[0];
+imageUpload.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
     if (!file) return;
-    explanationText.innerText = "Processing image with OCR + AI...";
+    explanationText.innerText = "Processing image...";
     const formData = new FormData();
     formData.append("file", file);
     try {
@@ -106,12 +106,13 @@ imageUpload.addEventListener('change', async (event) => {
         const score = data.analysis.truth_percentage;
         accuracyValue.innerText = `${score}%`;
         renderConfidenceGraph(
-            data.analysis.confidence_graph.map(c => c.confidence * 100)
+            data.analysis.confidence_graph.map(c => c.confidence)
         );
         explanationText.innerText =
             "Image Analysis:\n" +
             JSON.stringify(data.image_verification, null, 2);
-    } catch (err) {
-        explanationText.innerText = "Image processing failed.";
+
+    } catch {
+        explanationText.innerText = "Image verification failed.";
     }
 });
